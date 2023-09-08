@@ -1,5 +1,3 @@
-#look at David's reference spreadsheet
-
 #list of libraries
 library(tidyverse)
 library(dplyr)
@@ -30,6 +28,19 @@ df$date <- as.POSIXct(df$date, format = "%d/%m/%Y")
 #add column with a new formula
 df2$pre_cal_error <- round((abs(df2$pre_cal_read - df2$approx_value_of_pre_cal_solution) / df2$approx_value_of_pre_cal_solution) * 100, 2)
 
+#provide some feedback about processing time
+TEnd<-Sys.time() #Record the end time for testing purposes
+print(TEnd-TStart) #Total processing time
+warnings() #Check for any warning messages
 
-
-
+#forloop
+for(i in 1:length(csvs)){
+  #vroom reads data within the csv
+  data <- vroom(csvs[i])
+  #removes first column of data (all csvs read in above line)
+  data <- data %>% select(-1)
+  #adding "site" column to each csv being i or the name of each csv
+  data$site <- csvs[i]
+  #binding all data to a combined csv
+  combined <- combined %>% rbind(data)
+  }
